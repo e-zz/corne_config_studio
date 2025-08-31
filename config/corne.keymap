@@ -229,8 +229,8 @@
 //         };
         kp_layer {
             bindings = <
-&kp TAB  &kp KP_DIVIDE    &trans     &mmv MOVE_UP    &trans       &kp KP_MULTIPLY  &trans           &trans               &kp KP_N8    &kp KP_NUMLOCK   &trans           &trans
-&trans   &kp KP_PLUS      &mmv MOVE_LEFT &mmv MOVE_DOWN    &mmv MOVE_RIGHT    &kp KP_MINUS     &trans           &kp KP_N4            &kp KP_N2    &kp KP_N6        &tog 2           &trans
+&kp TAB  &kp KP_DIVIDE    &trans     &mmv MOVE_UP(3000)    &trans       &kp KP_MULTIPLY  &trans           &trans               &mmv MOVE_UP    &kp KP_NUMLOCK   &trans           &trans
+&trans   &kp KP_PLUS      &mmv MOVE_LEFT(3000) &mmv MOVE_DOWN(3000)    &mmv MOVE_RIGHT(3000)    &kp KP_MINUS     &trans           &mmv MOVE_LEFT            &mmv MOVE_DOWN    &mmv MOVE_RIGHT        &tog 2           &trans
 &trans   &kp KP_NUMBER_0  &trans     &trans       &kp K_CMENU  &kp KP_DOT       &kp KP_MULTIPLY  &kp LS(KP_SUBTRACT)  &kp KP_PLUS  &kp KP_SUBTRACT  &kp LS(KP_PLUS)  &tog 5
                                      &mt LALT AT  &trans     &trans           &kp KP_NUMBER_0  &lt 3 KP_DOT         &trans
             >;
