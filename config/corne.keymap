@@ -241,7 +241,7 @@
             bindings = <
 &kp TAB  &kp KP_DIVIDE    &trans          &mmv MOVE_UP       &trans             &kp KP_MULTIPLY  &trans    &msc SCRL_DOWN        &mmv MOVE_UP      &msc SCRL_UP      &trans   &trans
 &trans   &msc SCRL_DOWN   &mmv MOVE_LEFT  &mmv MOVE_DOWN     &mmv MOVE_RIGHT    &msc SCRL_UP     &trans    &mmv MOVE_LEFT        &mmv MOVE_DOWN    &mmv MOVE_RIGHT   &tog 2   &trans
-&tog 6   &trans           &trans          &kp F13            &mkp LCLK          &mkp RCLK        &kp F13   &kp LS(KP_SUBTRACT)   &kp KP_PLUS       &kp KP_SUBTRACT   &kp END  &tog 5
+&mo 6   &trans           &trans          &kp F13            &mkp LCLK          &mkp RCLK        &kp F13   &kp LS(KP_SUBTRACT)   &kp KP_PLUS       &kp KP_SUBTRACT   &kp END  &tog 5
                                              &mt LALT AT           &trans               &trans           &mkp LCLK  &mkp RCLK     &trans
             >;
             label = "K";
