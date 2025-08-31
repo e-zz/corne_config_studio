@@ -18,8 +18,8 @@
 #include <dt-bindings/zmk/outputs.h>
 #include <dt-bindings/zmk/rgb.h>
 
-#define ZMK_MOUSE_DEFAULT_MOVE_VAL 2000  // 600
-#define ZMK_MOUSE_DEFAULT_SCRL_VAL 30    // 10
+#define ZMK_MOUSE_DEFAULT_MOVE_VAL 5000  // 600
+#define ZMK_MOUSE_DEFAULT_SCRL_VAL 50    // 10
 
 #include <dt-bindings/zmk/pointing.h>
 
