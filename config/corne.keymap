@@ -1,0 +1,226 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#define SYMBOL 1
+#define NUM 2
+#define FUN 3
+#define SYS 4
+#define PAD 5
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/backlight.h>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/ext_power.h>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/outputs.h>
+#include <dt-bindings/zmk/rgb.h>
+
+#define U_TAPPING_TERM 300
+
+/ {
+    combos {
+        compatible = "zmk,combos";
+
+        combo_esc {
+            bindings = <&kp TAB>;
+            key-positions = <0 1>;
+            layers = <0>;
+            timeout-ms = <50>;
+        };
+
+        combo_del {
+            bindings = <&kp DEL>;
+            key-positions = <10 11>;
+        };
+
+        combo_tognum {
+            bindings = <&tog NUM>;
+            key-positions = <12 13>;
+        };
+
+        combo_togsys {
+            bindings = <&tog SYS>;
+            key-positions = <0 24 12>;
+        };
+
+        combo_end {
+            bindings = <&kp END>;
+            key-positions = <22 34>;
+        };
+
+        kp_layer {
+            bindings = <&tog 5>;
+            key-positions = <23 35>;
+        };
+
+        combo_def_layer {
+            bindings = <&to 0>;
+            key-positions = <38 39>;
+        };
+
+        combo_mouse_layer {
+            bindings = <&tog 5>;
+            key-positions = <25 13>;
+        };
+
+        down_left {
+            bindings = <&kp KP_NUMBER_1>;
+            layers = <5>;
+            key-positions = <31 32>;
+        };
+
+        up_left {
+            bindings = <&kp KP_NUMBER_7>;
+            layers = <5>;
+            key-positions = <31 33>;
+        };
+
+        up_right {
+            bindings = <&kp KP_NUMBER_9>;
+            layers = <5>;
+            key-positions = <33 34>;
+        };
+
+        down_right {
+            bindings = <&kp KP_NUMBER_3>;
+            layers = <5>;
+            key-positions = <32 34>;
+        };
+
+        num_layer_eq {
+            bindings = <&kp EQUAL>;
+            key-positions = <15 16>;
+            layers = <2>;
+        };
+    };
+
+    behaviors {
+    };
+
+    behaviors {
+        esctab: escape_TAB {
+            compatible = "zmk,behavior-mod-morph";
+            label = "TAB_ESCAPE";
+            #binding-cells = <0>;
+            bindings = <&kp ESC>, <&kp TAB>;
+
+            mods = <(MOD_LCTL|MOD_LALT|MOD_LGUI|MOD_LSFT)>;
+            keep-mods = <(MOD_LCTL|MOD_LALT|MOD_LGUI|MOD_LSFT)>;
+        };
+
+        bsdel: bs_DEL {
+            compatible = "zmk,behavior-mod-morph";
+            label = "SHIFT_DELETE";
+            #binding-cells = <0>;
+            bindings = <&kp BSPC>, <&kp DEL>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+            keep-mods = <MOD_RSFT>;
+        };
+        sftcaps: shift_to_caps {
+            compatible = "zmk,behavior-tap-dance";
+            label = "shift_caps";
+            #binding-cells = <0>;
+            tapping-term-ms = <300>;
+            bindings = <&kp LSHIFT>, <&kp LSHIFT>, <&kp CAPSLOCK>;
+        };
+
+        lralt: lalt_to_ralt {
+            compatible = "zmk,behavior-tap-dance";
+            label = "lalt_ralt";
+            #binding-cells = <0>;
+            tapping-term-ms = <300>;
+            bindings = <&kp LALT>, <&kp RALT>, <&kp RA(GRAVE)>;
+        };
+        u_lt: u_lt {
+            compatible = "zmk,behavior-hold-tap";
+            label = "u_lt";
+            #binding-cells = <2>;
+            tapping_term_ms = <U_TAPPING_TERM>;
+            flavor = "tap-preferred";
+            bindings = <&mo>, <&kp>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            // -----------------------------------------------------------------------------------------
+            // |  TAB |  Q  |  W  |  E  |  R  |  T  |   |  Y  |  U   |  I  |  O  |  P  | BKSP |
+            // | CTRL |  A  |  S  |  D  |  F  |  G  |   |  H  |  J   |  K  |  L  |  ;  |  '   |
+            // | SHFT |  Z  |  X  |  C  |  V  |  B  |   |  N  |  M   |  ,  |  .  |  /  | ESC  |
+            //                    | GUI | LWR | SPC |   | ENT | RSE  | ALT |
+
+            bindings = <
+&esctab    &kp Q            &kp W  &kp E     &kp R            &kp T       &kp Y             &kp U        &kp I      &kp O      &kp P       &bsdel
+&sftcaps   &kp A            &kp S  &kp D     &kp F            &kp G       &kp H             &kp J        &kp K      &kp L      &lt 2 SEMI  &kp SQT
+&kp LCTRL  &lt SYMBOL BSLH  &kp Z  &kp X     &kp C            &kp V       &kp B             &kp N        &kp M      &kp COMMA  &kp DOT     &mt RSHFT FSLH
+                                   &lralt  &u_lt PAD SPACE  &kp LGUI    &lt SYMBOL ENTER  &lt 3 SPACE  &kp RCTRL
+            >;
+        };
+
+        symbol_layer {
+            // -----------------------------------------------------------------------------------------
+            // |  TAB |  !  |  @  |  #  |  $  |  %  |   |  ^  |  &  |  *  |  (  |  )  | BKSP |
+            // | CTRL |     |     |     |     |     |   |  -  |  =  |  [  |  ]  |  \  |  `   |
+            // | SHFT |     |     |     |     |     |   |  _  |  +  |  {  |  }  | "|" |  ~   |
+            //                    | GUI |     | SPC |   | ENT |     | ALT |
+
+            bindings = <
+&kp TAB  &kp EXCL  &kp AT  &kp HASH  &kp DLLR  &kp PRCNT    &kp CARET  &kp AMPS   &kp STAR  &kp LPAR  &kp RPAR  &trans
+&trans   &trans    &trans  &trans    &trans    &trans       &kp MINUS  &kp EQUAL  &kp LBKT  &kp RBKT  &trans    &kp GRAVE
+&trans   &trans    &trans  &trans    &trans    &trans       &kp UNDER  &kp PLUS   &kp LBRC  &kp RBRC  &kp PIPE  &kp QUESTION
+                           &trans    &trans    &trans       &trans     &trans     &trans
+            >;
+
+            label = "M";
+        };
+
+        num_layer {
+            bindings = <
+&trans  &kp MINUS     &kp N7  &kp N8       &kp N9  &kp PLUS     &trans          &trans          &trans         &trans     &trans  &trans
+&trans  &kp STAR      &kp N4  &kp N5       &kp N6  &kp SLASH    &kp LEFT_ARROW  &kp DOWN_ARROW  &kp UP_ARROW   &kp RIGHT  &tog 2  &trans
+&trans  &kp NUMBER_0  &kp N1  &kp N2       &kp N3  &kp DOT      &kp HOME        &kp PG_UP       &kp PAGE_DOWN  &trans     &kp END &tog 5
+                              &mt LALT AT  &trans  &trans       &trans          &tog 3          &trans
+            >;
+
+            label = "N";
+        };
+
+        fun_layer {
+            bindings = <
+&trans  &kp F12  &kp F7  &kp F8  &kp F9  &bt BT_SEL 5    &bt BT_SEL 4  &trans            &kp C_VOLUME_UP  &trans  &trans       &bt BT_CLR
+&trans  &kp F11  &kp F4  &kp F5  &kp F6  &bt BT_SEL 3    &bt BT_SEL 2  &kp C_PLAY_PAUSE  &kp C_VOL_DN     &trans  &tog 2       &trans
+&trans  &kp F10  &kp F1  &kp F2  &kp F3  &bt BT_SEL 1    &bt BT_SEL 0  &trans            &kp C_MUTE       &trans  &kp K_CMENU  &trans
+                         &trans  &tog 5  &trans          &trans        &tog 3            &trans
+            >;
+
+            label = "Fn";
+        };
+
+        sys_layer {
+            bindings = <
+&trans  &trans  &trans  &ext_power EP_TOG  &rgb_ug RGB_TOG  &out OUT_TOG    &trans       &trans  &ext_power EP_TOG  &ext_power EP_ON  &trans  &trans
+&trans  &trans  &trans  &ext_power EP_ON   &trans           &trans          &trans       &trans  &trans             &trans            &trans  &trans
+&trans  &trans  &studio_unlock  &trans             &trans           &trans          &bl BL_TOG   &trans  &trans             &trans            &trans  &trans
+                        &trans             &trans           &bootloader     &bootloader  &trans  &trans
+>;
+
+           label = "SYS";
+        };
+
+        kp_layer {
+            bindings = <
+&kp TAB  &kp KP_DIVIDE    &trans     &kp KP_N8    &trans       &kp KP_MULTIPLY  &trans           &trans               &kp KP_N8    &kp KP_NUMLOCK   &trans           &trans
+&trans   &kp KP_PLUS      &kp KP_N4  &kp KP_N2    &kp KP_N6    &kp KP_MINUS     &trans           &kp KP_N4            &kp KP_N2    &kp KP_N6        &tog 2           &trans
+&trans   &kp KP_NUMBER_0  &trans     &trans       &kp K_CMENU  &kp KP_DOT       &kp KP_MULTIPLY  &kp LS(KP_SUBTRACT)  &kp KP_PLUS  &kp KP_SUBTRACT  &kp LS(KP_PLUS)  &tog 5
+                                     &mt LALT AT  &trans     &trans           &kp KP_NUMBER_0  &lt 3 KP_DOT         &trans
+            >;
+
+            label = "K";
+        };
+    };
+};
