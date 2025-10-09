@@ -1,0 +1,15 @@
+/* source keypos definitions */
+#include "zmk-helpers/key-labels/42.h"
+
+/* map 6 extra keys */
+
+/* activate bluetooth */
+#define CONFIG_WIRELESS 1
+
+/* source the main keymap */
+#include "../../../base.keymap"
+
+/* use 6-column layout*/
+/ { chosen { zmk,matrix_transform = &default_transform; }; };
+
+
