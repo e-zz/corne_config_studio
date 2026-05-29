@@ -25,6 +25,7 @@
 #include <dt-bindings/zmk/pointing.h>
 
 #include <input/processors.dtsi>
+#include <dt-bindings/zmk/mouse.h>
 &mmv_input_listener {
     input-processors = <&zip_xy_scaler 1 1>; // Default speed
     precision_mode {

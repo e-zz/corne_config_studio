@@ -1,0 +1,12 @@
+file_format: "1"
+id: chipper42
+name: Chipper42
+type: shield
+url: https://github.com/e-zz/zmk-config
+requires: [ seeeduino_xiao_ble ]
+features:
+  - keys
+  - studio
+siblings:
+  - chipper42_left
+  - chipper42_right

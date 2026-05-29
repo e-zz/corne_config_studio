@@ -30,8 +30,8 @@ include:
   # Add Seeed XIAO BLE builds
   - board: seeeduino_xiao_ble
     shield: chipper42_left
-    # snippet: studio-rpc-usb-uart
-    # cmake-args: -DCONFIG_ZMK_STUDIO=y
+    snippet: studio-rpc-usb-uart
+    cmake-args: -DCONFIG_ZMK_STUDIO=y
   - board: seeeduino_xiao_ble
     shield: chipper42_right
   - board: seeeduino_xiao_ble
