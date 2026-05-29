@@ -12,6 +12,7 @@
 		compatible = "zmk,physical-layout";
 		display-name = "Chipper42 6-Column";
 		transform = <&default_transform>;
+		kscan = <&kscan0>;
 		keys = <
 			&key_physical_attrs 100 100 0    0    0 0 0
 			&key_physical_attrs 100 100 100  0    0 0 0
