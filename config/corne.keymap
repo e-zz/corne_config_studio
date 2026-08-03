@@ -60,26 +60,31 @@
         combo_togsys {
             bindings = <&tog SYS>;
             key-positions = <0 24 12>;
+            layers = <0 1 2 3 4 5 6>;
         };
 
         combo_end {
             bindings = <&kp END>;
             key-positions = <22 34>;
+            layers = <0 1 2 3 4 5 6>;
         };
 
         kp_layer {
             bindings = <&tog 5>;
             key-positions = <23 35>;
+            layers = <0 1 2 3 4 5 6>;
         };
 
         combo_def_layer {
             bindings = <&to 0>;
             key-positions = <38 39>;
+            layers = <0 1 2 3 4 5 6>;
         };
 
         combo_mouse_layer {
             bindings = <&tog 5>;
             key-positions = <25 13>;
+            layers = <0 1 2 3 4 5 6>;
         };
 
         down_left {
@@ -202,7 +207,7 @@
 &esctab    &kp Q            &kp W  &kp E     &kp R            &kp T       &kp Y             &kp U        &kp I      &kp O      &kp P       &bsdel
 &sftcaps   &kp A            &kp S  &kp D     &kp F            &kp G       &kp H             &kp J        &kp K      &kp L      &lt 2 SEMI  &kp SQT
 &kp LCTRL  &lt SYMBOL BSLH  &kp Z  &kp X     &kp C            &kp V       &kp B             &kp N        &kp M      &kp COMMA  &kp DOT     &mt RSHFT FSLH
-                                   &lralt  &u_lt PAD SPACE  &kp LGUI    &lt SYMBOL ENTER  &lt 3 SPACE  &kp RCTRL
+                                   &lralt  &u_lt PAD SPACE  &kp LGUI    &lt SYMBOL ENTER  &lt 3 SPACE  &tog 7
             >;
         };
 
@@ -283,6 +288,25 @@
                  &trans  &trans  &trans  &trans  &trans  &trans
             >;
             label = "FK";
+        };
+
+        shift_layer {
+            // QWERTY with the right half columns rotated one column to the right (col 5 wraps to col 0).
+            // Left half and thumbs unchanged.
+            // -----------------------------------------------------------------------------------------
+            // |  TAB |  Q  |  W  |  E  |  R  |  T  |   | BKSP |  Y  |  U  |  I  |  O  |  P  |
+            // | SHFT |  A  |  S  |  D  |  F  |  G  |   |  '   |  H  |  J  |  K  |  L  |  ;  |
+            // | CTRL |  \  |  Z  |  X  |  C  |  V  |   |  /   |  B  |  N  |  M  |  ,  |  .  |
+            //                    | ALT | SPC | GUI |   | ENT | RSE  | TG  |
+
+            bindings = <
+&esctab    &kp Q            &kp W  &kp E     &kp R            &kp T       &bsdel           &kp Y        &kp U      &kp I      &kp O      &kp P
+&sftcaps   &kp A            &kp S  &kp D     &kp F            &kp G       &kp SQT          &kp H        &kp J      &kp K      &kp L      &lt 2 SEMI
+&kp LCTRL  &lt SYMBOL BSLH  &kp Z  &kp X     &kp C            &kp V       &mt RSHFT FSLH   &kp B        &kp N      &kp M      &kp COMMA  &kp DOT
+                                   &lralt  &u_lt PAD SPACE  &kp LGUI    &lt SYMBOL ENTER  &lt 3 SPACE  &trans
+            >;
+
+            label = "R1";
         };
     };
 };
