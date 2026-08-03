@@ -1,6 +1,6 @@
-# AGENTS.md — corne_config_studio (`shield/chipper`)
+# AGENTS.md — corne_config_studio
 
-ZMK 固件配置仓库。本分支同时构建**两个键盘**，共用同一个 keymap 文件：
+ZMK 固件配置仓库。同时构建**两个键盘**，共用同一个 keymap 文件：
 - Corne（nice_nano_v2，左右分体）
 - **Chipper42**（seeeduino_xiao_ble，自定义 shield，42 键 6 列分体）
 
