@@ -47,7 +47,14 @@ GitHub Actions 自动编译。本文件记录仓库结构、keymap 布局约定�
 4. `sys_layer` — "SYS"（电源/背光/bootloader/`studio_unlock`）
 5. `kp_layer` — "K" 数字键盘 + 鼠标层（`&mmv`/`&msc`/`&mkp`）
 6. `fast_kp_layer` — "FK" 全 `&trans`，**瞬时精度层**：由 `&lm 6 LCTRL` 触发，且 `mmv_input_listener` 的 `precision_mode` 监听 `layers = <6>`（x2 速度）
-7. `shift_layer` — "R1"：QWERTY 但**右手半区所有列右移一列**（col5 回卷到 col0）
+7. `shift_layer` — "R1"：QWERTY 但**右手半区所有列右移一列**（col5 回卷到 col0），左半/拇指不变。切换键 = 右拇指最右（pos 41，`&tog 7`，原 `&kp RCTRL`）
+8. `symbol_shift_layer` — "MR"：symbol 的旋转版（右手半区右移一列）
+9. `num_shift_layer` — "NR"：num 的旋转版
+10. `fun_shift_layer` — "FR"：fun 的旋转版
+11. `sys_shift_layer` — "SR"：sys 的旋转版
+12. `kp_shift_layer` — "KR"：kp 的旋转版
+
+**层 8-12（旋转变体）**：shift 模式下进入的所有层都必须是旋转版，否则右手错位一列。R1 上的层入口全部指向变体（pos 19 hold→KR、pos 39/13 hold→MR、pos 40 hold→FR、pos 32 hold→NR、combo→各 *_shift）。变体内部出口也旋转重指（`&tog NUM_S`/`&tog PAD_S`/`&tog FUN_S`），pos 41 = `&to 0`（一键回家）。fast 层(6)全 `&trans`，从 KR 里 `&lm 6 LCTRL` 直接复用，无需旋转版。
 
 ### 物理键位编号（42 键，Corne 与 Chipper42 一致）
 
@@ -56,12 +63,13 @@ GitHub Actions 自动编译。本文件记录仓库结构、keymap 布局约定�
 - 行顺序自上而下，列顺序从左到右。
 - 右半拇指：39 = `&lt SYMBOL ENTER`，40 = `&lt 3 SPACE`，**41 = `&tog 7`**（shift_layer 切换键，原为 `&kp RCTRL`）。
 
-### shift_layer 旋转规则（必须与 default 保持同步）
+### 旋转规则（shift_layer 及全部 *_shift 变体，必须与 base 保持同步）
 
 右半 6 列内容整体右移一列，最右列回卷到最左列：
 - 新 col0 ← 旧 col5，新 col1 ← 旧 col0，…，新 col5 ← 旧 col4
-- 左半与拇指行不变（41 位置是 `&trans`，透传到 default 的 `&tog 7` 实现切回）
-- 改 default 右半时，必须同步更新 shift_layer，否则布局脱节
+- 左半与拇指行不变（拇指的层入口键除外：指向旋转版目标）
+- 改任何 base 层右半时，必须同步更新其 *_shift 变体，否则布局脱节
+- 变体内部对层号的引用（`&tog`/`&lt`）随旋转重指：出口键跟列走（如 num 的 `&tog 2` 在 pos 31 → num_shift 的 `&tog NUM_S` 在 pos 32），拇指上 `&tog 3`→`&tog FUN_S`、`&tog 5`→`&tog PAD_S`；变体 pos 41 一律 `&to 0`（一键退出 shift 世界）
 
 ### 默认层右手区列映射（基准）
 
@@ -100,16 +108,22 @@ shift_layer 旋转后行0 = BKSP Y U I O P，行1 = `'` H J K L `;`，行2 = `/`
 |-------|------|------|--------|
 | combo_esc | 0,1 | TAB | 仅0 |
 | combo_del | 10,11 | DEL | 全部 |
-| combo_tognum | 12,13 | tog 2 | 全部 |
+| combo_tognum | 12,13 | tog 2 | **0-6** |
 | combo_togsys | 0,24,12 | tog 4 | **0-6** |
 | combo_end | 22,34 | END | **0-6** |
 | kp_layer | 23,35 | tog 5 | **0-6** |
 | combo_def_layer | 38,39 | to 0 | **0-6** |
 | combo_mouse_layer | 25,13 | tog 5 | **0-6** |
+| combo_tognum_shift | 12,13 | tog 9 | **7-12** |
+| combo_togsys_shift | 0,25,12 | tog 11 | **7-12** |
+| combo_end_shift | 23,35 | END | **7-12** |
+| kp_layer_shift | 24,36 | tog 12 | **7-12** |
+| combo_def_layer_shift | 33,39 | to 0 | **7-12** |
+| combo_mouse_layer_shift | 26,13 | tog 12 | **7-12** |
 | down/up/left/right | 31,32,33,34 | KP 数字 | 仅5 |
 | num_layer_eq | 15,16 | EQUAL | 仅2 |
 
-**限制到 0-6 的原因**：这些 combo 的物理键在 shift_layer(7) 下含义改变（如 23+35 从 I+, 变成 U+N），会误触发。限制只排除层 7，fast 层(6)行为保持不变。涉及右半/跨半位置的 combo 都要限制层。
+**限制到 0-6 的原因**：这些 combo 的物理键在 shift_layer(7) 下含义改变（如 23+35 从 I+, 变成 U+N），会误触发。**`*_shift` 变体是字母忠实版**：位置取旋转后的字母位置（如 R1 上 O 在 pos 25，所以 togsys_shift 是 0,25,12），绑定指向旋转层，只在层 7-12 生效。改 base combo 位置时同步改其 shift 版。
 
 ## ZMK Studio
 
@@ -121,9 +135,9 @@ shift_layer 旋转后行0 = BKSP Y U I O P，行1 = `'` H J K L `;`，行2 = `/`
 ## Gotchas / 已知陷阱
 
 1. **注释 ≠ 实际绑定**：default_layer 顶部的 ASCII 注释与真实 bindings 有多处不一致（注释的 CTRL/SHFT/ALT 与绑定错位）。**一切以 bindings 为准**，改布局时别参考注释。
-2. **层索引脆弱**：`&tog 5`、`&lt 2 SEMI`、`&lm 6`、combo `layers`、`precision_mode` 的 `layers = <6>` 全按声明顺序编号。在 keymap 中间插入/删除层节点会改号，需全局核查。
-3. **41 位置**：物理上是"ALT"键（注释如此），但绑定原来是 RCTRL，现为 `&tog 7`。用户叫它 ALT 键。
-4. **层 6 已被 fast 层占用**：shift_layer 必须用层 7，不能用 6。
+2. **层索引脆弱**：`&tog 5`、`&lt 2 SEMI`、`&lm 6`、combo `layers`、`precision_mode` 的 `layers = <6>` 全按声明顺序编号。在 keymap 中间插入/删除层节点会改号，需全局核查。层 7-12 的引用分散在 shift 层、6 个 *_shift combo、变体内部出口——改层序先 grep 全部 `&tog|&lt|&lm|&u_lt|&mo|layers =`。
+3. **41 位置**：物理上是"ALT"键（注释如此），但绑定原来是 RCTRL，现为 `&tog 7`。**在层 8-12（旋转变体）里 pos 41 是 `&to 0`（一键回 default）**——ALT 键在 shift 世界里永远是"退出"。
+4. **层 6 已被 fast 层占用、层 7 是 shift 层**：旋转变体必须从层 8 开始，不能插在 1-7 中间。
 5. **去抖**：`corne.conf`/`chipper42.conf` 设了 press 8ms / release 4ms。
 6. Chipper42 是 seeeduino_xiao_ble（非 nRF52 常规板），OLED 用 I2C 引脚 4/5；改 shield 需小心 GPIO。
 

@@ -10,6 +10,12 @@
 #define SYS 4
 #define PAD 5
 #define FASTPAD 6
+/* Shifted (rotated) variants of layers 1-5, active while shift mode (7) or a shifted layer is on */
+#define SYMBOL_S 8
+#define NUM_S 9
+#define FUN_S 10
+#define SYS_S 11
+#define PAD_S 12
 
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/backlight.h>
@@ -55,6 +61,7 @@
         combo_tognum {
             bindings = <&tog NUM>;
             key-positions = <12 13>;
+            layers = <0 1 2 3 4 5 6>;
         };
 
         combo_togsys {
@@ -85,6 +92,46 @@
             bindings = <&tog 5>;
             key-positions = <25 13>;
             layers = <0 1 2 3 4 5 6>;
+        };
+
+        /* Shifted variants — active while shift mode (layer 7) or any shifted layer (8-12) is the top layer.
+           Positions are LETTER-faithful: the same letters as the default combos, at their rotated positions
+           (e.g. on R1, O lives at pos 25, so togsys is <0 25 12> instead of <0 24 12>).
+           Bindings target the shifted layer variants. */
+        combo_tognum_shift {
+            bindings = <&tog NUM_S>;
+            key-positions = <12 13>;
+            layers = <7 8 9 10 11 12>;
+        };
+
+        combo_togsys_shift {
+            bindings = <&tog SYS_S>;
+            key-positions = <0 25 12>;
+            layers = <7 8 9 10 11 12>;
+        };
+
+        combo_end_shift {
+            bindings = <&kp END>;
+            key-positions = <23 35>;
+            layers = <7 8 9 10 11 12>;
+        };
+
+        kp_layer_shift {
+            bindings = <&tog PAD_S>;
+            key-positions = <24 36>;
+            layers = <7 8 9 10 11 12>;
+        };
+
+        combo_def_layer_shift {
+            bindings = <&to 0>;
+            key-positions = <33 39>;
+            layers = <7 8 9 10 11 12>;
+        };
+
+        combo_mouse_layer_shift {
+            bindings = <&tog PAD_S>;
+            key-positions = <26 13>;
+            layers = <7 8 9 10 11 12>;
         };
 
         down_left {
@@ -293,20 +340,90 @@
         shift_layer {
             // QWERTY with the right half columns rotated one column to the right (col 5 wraps to col 0).
             // Left half and thumbs unchanged.
+            // Layer-entry keys target the SHIFTED variants: hold 19→KR(12), hold 39→MR(8), hold 40→FR(10),
+            // hold 13→MR(8), hold 32→NR(9). Combos are the *_shift variants (see combos section).
             // -----------------------------------------------------------------------------------------
             // |  TAB |  Q  |  W  |  E  |  R  |  T  |   | BKSP |  Y  |  U  |  I  |  O  |  P  |
             // | SHFT |  A  |  S  |  D  |  F  |  G  |   |  '   |  H  |  J  |  K  |  L  |  ;  |
             // | CTRL |  \  |  Z  |  X  |  C  |  V  |   |  /   |  B  |  N  |  M  |  ,  |  .  |
             //                    | ALT | SPC | GUI |   | ENT | RSE  | TG  |
+            //                         (hold→KR)      (hold→MR)(hold→FR)
 
             bindings = <
 &esctab    &kp Q            &kp W  &kp E     &kp R            &kp T       &bsdel           &kp Y        &kp U      &kp I      &kp O      &kp P
-&sftcaps   &kp A            &kp S  &kp D     &kp F            &kp G       &kp SQT          &kp H        &kp J      &kp K      &kp L      &lt 2 SEMI
-&kp LCTRL  &lt SYMBOL BSLH  &kp Z  &kp X     &kp C            &kp V       &mt RSHFT FSLH   &kp B        &kp N      &kp M      &kp COMMA  &kp DOT
-                                   &lralt  &u_lt PAD SPACE  &kp LGUI    &lt SYMBOL ENTER  &lt 3 SPACE  &trans
+&sftcaps   &kp A            &kp S  &kp D     &kp F            &kp G       &kp SQT          &kp H        &kp J      &kp K      &kp L      &lt NUM_S SEMI
+&kp LCTRL  &lt SYMBOL_S BSLH  &kp Z  &kp X     &kp C            &kp V       &mt RSHFT FSLH   &kp B        &kp N      &kp M      &kp COMMA  &kp DOT
+                                   &lralt  &u_lt PAD_S SPACE  &kp LGUI    &lt SYMBOL_S ENTER  &lt FUN_S SPACE  &trans
             >;
 
             label = "R1";
+        };
+
+        symbol_shift_layer {
+            // Symbol (M) with the right half rotated one column to the right (col 5 wraps to col 0).
+            // Entered by holding pos 39 or pos 13 while in shift mode; momentary (releases back to R1).
+            bindings = <
+&kp TAB  &kp EXCL  &kp AT  &kp HASH  &kp DLLR  &kp PRCNT    &trans       &kp CARET  &kp AMPS  &kp STAR  &kp LPAR  &kp RPAR
+&trans   &trans    &trans  &trans    &trans    &trans       &kp GRAVE    &kp MINUS  &kp EQUAL  &kp LBKT  &kp RBKT  &trans
+&trans   &trans    &trans  &trans    &trans    &trans       &kp QUESTION &kp UNDER  &kp PLUS   &kp LBRC  &kp RBRC  &kp PIPE
+                           &trans    &trans    &trans       &trans     &trans     &trans
+            >;
+
+            label = "MR";
+        };
+
+        num_shift_layer {
+            // Num (N) with the right half rotated. Entered via combo_tognum_shift.
+            // Internal exits rotated with the layer: pos 32 tog off, pos 33 → KR, pos 40 → FR. Pos 41 = home.
+            bindings = <
+&trans  &kp MINUS     &kp N7  &kp N8       &kp N9  &kp PLUS     &trans          &trans          &trans         &trans     &trans  &trans
+&trans  &kp STAR      &kp N4  &kp N5       &kp N6  &kp SLASH    &trans          &kp LEFT_ARROW  &kp DOWN_ARROW &kp UP_ARROW &kp RIGHT &tog NUM_S
+&trans  &kp NUMBER_0  &kp N1  &kp N2       &kp N3  &kp DOT      &tog PAD_S      &kp HOME        &kp PG_UP       &kp PAGE_DOWN  &trans     &kp END
+                              &mt LALT AT  &trans  &trans       &trans          &tog FUN_S      &to 0
+            >;
+
+            label = "NR";
+        };
+
+        fun_shift_layer {
+            // Fn (F) with the right half rotated. Entered by holding pos 40 while in shift mode.
+            // Internal exits: pos 32 → NR, pos 19 → KR, pos 40 tog off. Pos 41 = home.
+            bindings = <
+&kp LC(LA(HOME))  &kp F12  &kp F7  &kp F8  &kp F9  &bt BT_SEL 5    &bt BT_CLR  &bt BT_SEL 4  &trans            &kp C_VOLUME_UP  &trans  &trans
+&trans  &kp F11  &kp F4  &kp F5  &kp F6  &bt BT_SEL 3    &trans          &bt BT_SEL 2  &kp C_PLAY_PAUSE  &kp C_VOL_DN     &trans  &tog NUM_S
+&trans  &kp F10  &kp F1  &kp F2  &kp F3  &bt BT_SEL 1    &trans          &bt BT_SEL 0  &trans            &kp C_MUTE       &trans  &kp K_CMENU
+                         &trans  &tog PAD_S  &trans          &trans        &tog FUN_S        &to 0
+            >;
+
+            label = "FR";
+        };
+
+        sys_shift_layer {
+            // SYS with the right half rotated. Entered via combo_togsys_shift.
+            // No internal exits (mirrors base SYS); leave via pos 41 (home) or combo_def_layer_shift.
+            bindings = <
+&trans  &trans  &trans  &ext_power EP_TOG  &rgb_ug RGB_TOG  &out OUT_TOG    &trans       &trans  &trans  &ext_power EP_TOG  &ext_power EP_ON  &trans
+&trans  &trans  &trans  &ext_power EP_ON   &trans           &trans          &trans       &trans  &trans  &trans             &trans            &trans
+&trans  &trans  &studio_unlock  &trans             &trans           &trans          &trans  &bl BL_TOG   &trans  &trans             &trans  &trans
+                        &trans             &trans           &bootloader     &bootloader  &trans  &to 0
+            >;
+
+            label = "SR";
+        };
+
+        kp_shift_layer {
+            // K/PAD with the right half rotated. Entered by holding pos 19 (momentary) or via kp_layer_shift /
+            // combo_mouse_layer_shift combos (toggled). &lm FASTPAD LCTRL at pos 12 keeps precision mode (layer 6)
+            // working from the shifted kp layout — layer 6 is fully transparent so no rotated fast layer needed.
+            // Internal exits: pos 32 → NR, pos 33 tog off. Pos 41 = home.
+            bindings = <
+&kp TAB     &kp KP_DIVIDE    &trans          &mmv MOVE_UP       &trans             &kp KP_MULTIPLY  &trans    &trans  &msc SCRL_DOWN  &mmv MOVE_UP      &msc SCRL_UP      &trans
+&trans      &msc SCRL_DOWN   &mmv MOVE_LEFT  &mmv MOVE_DOWN     &mmv MOVE_RIGHT    &msc SCRL_UP     &trans    &trans  &mmv MOVE_LEFT  &mmv MOVE_DOWN    &mmv MOVE_RIGHT   &tog NUM_S
+&lm 6 LCTRL &mkp MCLK        &trans          &kp F13            &mkp LCLK          &mkp RCLK        &tog PAD_S &kp F13  &kp LS(KP_SUBTRACT)  &kp KP_PLUS      &kp KP_SUBTRACT   &kp END
+                                             &mt LALT AT           &trans               &trans           &mkp LCLK  &mkp RCLK     &to 0
+            >;
+
+            label = "KR";
         };
     };
 };
